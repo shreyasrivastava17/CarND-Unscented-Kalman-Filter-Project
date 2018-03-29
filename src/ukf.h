@@ -30,9 +30,17 @@ public:
 
   ///* predicted sigma points matrix
   MatrixXd Xsig_pred_;
+  //Sigma Points in measurement space
+  MatrixXd Zsig_;
+  //Predicted mean in measurement space
+  VectorXd z_pred_;
+  //Precdicted measurement covariance
+  MatrixXd S_;
+  //Measurement noise 
+  MatrixXd R_;
 
   ///* time when the state is true, in us
-  long long time_us_;
+  long long previous_timestamp_;
 
   ///* Process noise standard deviation longitudinal acceleration in m/s^2
   double std_a_;
@@ -66,6 +74,8 @@ public:
 
   ///* Sigma point spreading parameter
   double lambda_;
+  //measurement state dimension
+  int n_z;
 
 
   /**
@@ -102,6 +112,11 @@ public:
    * @param meas_package The measurement at k+1
    */
   void UpdateRadar(MeasurementPackage meas_package);
+  MatrixXd PredictSigmaPoints(MatrixXd Xsig_aug, double delta_t);
+  void PredictMeanCovariance(MatrixXd Xsig_pred);
+  void PredictMeasurementSigmaPoints(int n_z);
+  void UpdateStates(VectorXd z, int n_z);
+  void WriteNIS(double nis, char sensor);
 };
 
 #endif /* UKF_H */
